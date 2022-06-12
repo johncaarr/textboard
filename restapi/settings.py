@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'restapi.userauth.apps.UserauthConfig',
+    'restapi.textboard.apps.TextboardConfig',
 ]
 
 MIDDLEWARE = [
