@@ -1,32 +1,56 @@
-import uuid
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 from django.dispatch import receiver
-from django.db.models.signals import post_save
-from django.contrib.auth.models import AbstractUser
 from rest_framework.authtoken.models import Token
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+
+@receiver(models.signals.post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
-  if created:
-    Token.objects.create(user=instance)
+    if created:
+        Token.objects.create(user=instance)
 
-class PostModel(models.Model):
-  id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-  username = models.CharField(max_length=32)
-  content = models.CharField(max_length=256)
-  created = models.DateTimeField()
-  editor = models.CharField(max_length=32)
-  edited = models.DateTimeField()
 
-  def __str__(self):
-    return self.id
+class Thread(models.Model):
+    subject = models.CharField(max_length=64)
+    comment = models.CharField(max_length=512)
+    options = models.CharField(max_length=128, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_edited = models.DateTimeField(auto_now=True)
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='thread_creator',
+        editable=False)
+    editor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='thread_editor',
+        editable=False)
 
-class UserModel(models.Model):
-  id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-  username = models.CharField(max_length=32)
-  email = models.CharField(max_length=128)
-  password = models.CharField(max_length=64)
+    class Meta:
+        ordering = ['-id']
 
-  def __str__(self):
-    return self.id
+
+class Post(models.Model):
+    comment = models.CharField(max_length=512)
+    options = models.CharField(max_length=128, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_edited = models.DateTimeField(auto_now=True)
+    thread = models.ForeignKey(
+        'userauth.Thread',
+        on_delete=models.CASCADE,
+        related_name='parent_thread')
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='post_creator',
+        editable=False)
+    editor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='post_editor',
+        editable=False)
+
+    class Meta:
+        ordering = ['-id']
