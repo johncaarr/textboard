@@ -6,8 +6,11 @@ from rest_framework.authtoken.models import Token
 
 
 class Board(models.Model):
-    name = models.CharField(max_length=8)
-    description = models.CharField(max_length=32)
+    name = models.CharField(max_length=8, editable=False)
+    description = models.CharField(max_length=32, editable=False)
+
+    class Meta:
+        ordering = ['-id']
 
 
 class Post(models.Model):
@@ -15,6 +18,8 @@ class Post(models.Model):
     options = models.CharField(max_length=128, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_edited = models.DateTimeField(auto_now=True)
+    ip_address = models.GenericIPAddressField(
+        default='localhost', protocol='IPv6', editable=False)
     thread = models.ForeignKey(
         'textboard.Thread',
         on_delete=models.CASCADE,
@@ -35,11 +40,14 @@ class Post(models.Model):
 
 
 class Thread(models.Model):
+    sticked = models.BooleanField(default=False)
     subject = models.CharField(max_length=64)
     comment = models.CharField(max_length=512)
     options = models.CharField(max_length=128, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_edited = models.DateTimeField(auto_now=True)
+    ip_address = models.GenericIPAddressField(
+        default='localhost', protocol='IPv6', editable=False)
     board = models.ForeignKey(
         'textboard.Board',
         on_delete=models.CASCADE,

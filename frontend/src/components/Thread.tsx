@@ -2,7 +2,8 @@ import React from 'react'
 
 export interface ThreadContainerProps {
   threadId: string
-  children: React.ReactNode
+  collapsed?: boolean
+  children?: React.ReactNode
 }
 
 export const ThreadContainer: React.FC<ThreadContainerProps> = ({
