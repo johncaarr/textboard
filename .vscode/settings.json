@@ -1,6 +1,0 @@
-{
-  "git.ignoreLimitWarning": true,
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "ms-python.python",
-  "workbench.colorTheme": "Default Dark+"
-}
