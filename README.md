@@ -6,6 +6,7 @@ This is a channel-style textboard with standard abilities and features
 * Django REST Framework
 
 ## Front End
+* Material UI
 * React.js
 * React-Redux
 * TypeScript
