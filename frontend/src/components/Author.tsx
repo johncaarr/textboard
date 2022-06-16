@@ -1,6 +1,16 @@
 import React from 'react'
+import { Box, Button } from '@mui/material'
 import { useFormState } from '@johncaarr/formish'
-import { requestThreadCreate } from '../modules/threads'
+import post from '../api/posts'
+import thread from '../api/threads'
+import TextInput from './TextInput'
+import type { AuthorInput } from '../types'
+
+const initialFormValues: AuthorInput = {
+  comment: '',
+  options: '',
+  subject: '',
+}
 
 export interface AuthorProps {
   variant: 'Post' | 'Thread'
@@ -8,70 +18,67 @@ export interface AuthorProps {
 
 export const Author: React.FC<AuthorProps> = ({ variant }) => {
   const isThread = variant === 'Thread'
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [values, errors, handleChange, handleSubmit] = useFormState({
-    initialValues: {
-      comment: '',
-      options: '',
-      subject: isThread ? '' : undefined,
-    },
+    initialValues: initialFormValues,
     onSubmit: (values) => {
-      requestThreadCreate({ values: values })
+      const inputValues: Partial<AuthorInput> = { ...values }
+      if (!isThread) {
+        delete inputValues.subject
+        post.create({ values: inputValues })
+      } else {
+        thread.create({ values: inputValues })
+      }
     },
   })
-
   return (
-    <div
+    <Box
       key='Author'
-      style={{ border: '1px inset black', maxWidth: '375px', padding: '10px' }}>
+      sx={{ border: '1px inset black', maxWidth: '500px', padding: '10px' }}>
       <form onSubmit={handleSubmit}>
-        {variant === 'Thread' && (
-          <div
-            key='Subject-field'
-            style={{ paddingLeft: '15px', paddingBottom: '5px' }}>
-            <label htmlFor='subject'>subject: </label>
-            <input
-              id='subject'
+        {isThread && (
+          <Box key='Subject-field'>
+            <TextInput
+              label='Subject'
               name='subject'
-              type='text'
               value={values.subject}
-              onChange={handleChange}
+              errval={errors.subject}
+              onFormChange={handleChange}
             />
-          </div>
+          </Box>
         )}
-        <div
-          key='Options-field'
-          style={{ paddingLeft: '15px', paddingBottom: '5px' }}>
-          <label htmlFor='options'>options: </label>
-          <input
-            id='options'
+        <Box key='Options-field'>
+          <TextInput
+            label='Options'
             name='options'
-            type='text'
             value={values.options}
-            onChange={handleChange}
+            errval={errors.options}
+            onFormChange={handleChange}
           />
-          <span>
-            <input
+          <Box component='span'>
+            <Button
+              color='primary'
               name='submit'
               type='submit'
               value='Post Thread'
-              style={{ float: 'right', minWidth: '100px' }}
+              variant='contained'
+              sx={{ float: 'right', minWidth: '100px' }}
             />
-          </span>
-        </div>
-        <div key='Comment-field'>
-          <label htmlFor='comment'>comment: </label>
-          <textarea
-            id='comment'
+          </Box>
+        </Box>
+        <Box key='Comment-field'>
+          <TextInput
+            fullWidth
+            multiline
+            minRows={6}
+            label='Comment'
             name='comment'
-            rows={8}
-            cols={40}
             value={values.comment}
-            onChange={handleChange}
+            errval={errors.comment}
+            onFormChange={handleChange}
           />
-        </div>
+        </Box>
       </form>
-    </div>
+    </Box>
   )
 }
 

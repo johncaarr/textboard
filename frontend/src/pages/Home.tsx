@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-
+import { Link } from 'react-router-dom'
+import { Box, Typography } from '@mui/material'
 import type { Board } from '../types'
 
 export const HomePage: React.FC = () => {
@@ -13,22 +14,21 @@ export const HomePage: React.FC = () => {
       .then((data) => setBoards(data.results))
   }, [])
   return (
-    <div key='HomePage'>
-      <div>
-        <h3>Boards</h3>
-      </div>
-      <div style={{ paddingLeft: 25 }}>
+    <Box key='HomePage'>
+      <Box>
+        <Typography variant='h3'>Boards</Typography>
+      </Box>
+      <Box sx={{ paddingLeft: 25 }}>
         {boards &&
           boards.map((board: Board) => (
-            <div key={board.name}>
-              <a href={`/${board.name}`}>
+            <Box key={board.name}>
+              <Link to={`/${board.name}`}>
                 {board.name} - {board.description}
-              </a>
-              <br />
-            </div>
+              </Link>
+            </Box>
           ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }
 

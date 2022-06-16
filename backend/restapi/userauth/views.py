@@ -9,4 +9,8 @@ from restapi.userauth import models, serializers
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.AllowAny]
+
+    def perform_update(self, serializer):
+        if self.request.user.id == serializer.data.id or self.request.user.is_staff:
+            serializer.save()

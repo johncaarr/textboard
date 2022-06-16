@@ -1,9 +1,9 @@
-from django.utils import timezone
 from django.shortcuts import render
+from django.db.models import Prefetch
 from django.contrib.auth.models import User
-from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import generics, mixins, permissions, viewsets
 from restapi.textboard import models, serializers
+from restapi.textboard.permissions import BoardAccessPermission
 
 
 def get_ip_address(view_set):
@@ -16,26 +16,37 @@ def get_ip_address(view_set):
     return ip_address
 
 
-class BoardAccessPermission(permissions.BasePermission):
-    message = 'Bad request'
-
-    def has_permission(self, request, view):
-        return request.method in permissions.SAFE_METHODS
-
-
-class BoardViewSet(viewsets.ModelViewSet):
-    queryset = models.Board.objects.all()
+class BoardViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.BoardSerializer
     permission_classes = [BoardAccessPermission]
 
+    def get_queryset(self):
+        queryset = models.Board.objects.all()
+        name = self.request.query_params.get('name')
+        if name:
+            queryset = queryset.filter(name=name)
+        return queryset
+
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = models.Post.objects.all()
     serializer_class = serializers.PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        board = self.request.query_params.get('board')
+        post = self.request.query_params.get('post')
+
+        post_queryset = models.Post.objects.all()
+        board_obj = models.Board.objects.get(name=board)
+
+        if board and post:
+            return post_queryset.filter(board=board_obj, id=post)
+        elif board:
+            return post_queryset.filter(board=board_obj)
+
+        return post_queryset
+
     def perform_create(self, serializer):
-        current_time = timezone.now()
         ip_address = get_ip_address(self)
         serializer.save(
             ip_address=ip_address,
@@ -43,7 +54,8 @@ class PostViewSet(viewsets.ModelViewSet):
             editor_id=self.request.user.id)
 
     def perform_update(self, serializer):
-        instance.save(editor_id=self.request.user)
+        if self.request.user.is_staff:
+            serializer.save(editor_id=self.request.user.id)
 
 
 class ThreadViewSet(viewsets.ModelViewSet):
@@ -51,8 +63,21 @@ class ThreadViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.ThreadSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def get_queryset(self):
+        board = self.request.query_params.get('board')
+        thread = self.request.query_params.get('thread')
+
+        thread_queryset = models.Thread.objects.all()
+        board_obj = models.Board.objects.get(name=board)
+
+        if board and thread:
+            return thread_queryset.filter(board=board_obj, id=thread)
+        elif board:
+            return thread_queryset.filter(board=board_obj)
+
+        return thread_queryset
+
     def perform_create(self, serializer):
-        current_time = timezone.now()
         ip_address = get_ip_address(self)
         serializer.save(
             sticked=False,
@@ -61,4 +86,5 @@ class ThreadViewSet(viewsets.ModelViewSet):
             editor_id=self.request.user.id)
 
     def perform_update(self, serializer):
-        instance.save(editor_id=self.request.user.id)
+        if self.request.user.is_staff:
+            serializer.save(editor_id=self.request.user.id)

@@ -8,21 +8,12 @@ from restapi.textboard.models import Board, Post, Thread
 
 class BoardSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=8, read_only=True)
-    description = serializers.CharField(max_length=32, read_only=True)
-
-    def create(self, validated_data):
-        board = Board.objects.create(**validated_data)
-        return board
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get(
-            'description', instance.description)
-        return instance
+    verbose = serializers.CharField(max_length=32, read_only=True)
+    description = serializers.CharField(max_length=64, read_only=True)
 
     class Meta:
         model = Board
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name', 'verbose', 'description']
 
 
 class ThreadSerializer(serializers.ModelSerializer):
@@ -30,11 +21,11 @@ class ThreadSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(max_length=512, required=True)
     options = serializers.CharField(max_length=128, required=False)
     sticked = serializers.BooleanField(default=False, read_only=True)
-    ip_address = serializers.CharField(
-        max_length=24, required=True, write_only=True)
-    board = BoardSerializer(Board.objects.all(), many=False)
+    board = serializers.SlugRelatedField(
+        many=False, queryset=Board.objects.all(), slug_field='name')
     creator = UserSerializer(many=False, read_only=True)
     editor = UserSerializer(many=False, read_only=True)
+    ip_address = serializers.HiddenField(default='::0')
 
     def create(self, validated_data):
         thread = Thread.objects.create(**validated_data)
@@ -57,11 +48,11 @@ class ThreadSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(max_length=512, required=True)
     options = serializers.CharField(max_length=128, required=False)
-    ip_address = serializers.CharField(
-        max_length=24, read_only=True)
-    thread = ThreadSerializer(Thread.objects.all(), many=False)
+    thread = serializers.PrimaryKeyRelatedField(
+        many=False, queryset=Thread.objects.all())
     creator = UserSerializer(many=False, read_only=True)
     editor = UserSerializer(many=False, read_only=True)
+    ip_address = serializers.HiddenField(default='::0')
 
     def create(self, validated_data):
         post = Post.objects.create(**validated_data)

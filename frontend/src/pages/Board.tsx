@@ -1,65 +1,63 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+import { Box, Divider, Typography } from '@mui/material'
+
 import Author from '../components/Author'
-import type { Thread } from '../types'
-import '../styles/board.css'
+import ThreadContainer from '../components/ThreadContainer'
+import boards from '../api/boards'
+import threads from '../api/threads'
+import type { Board, Thread } from '../types'
 
 export const BoardPage: React.FC = () => {
   const { boardName } = useParams()
-  const [threads, setThreads] = useState<Thread[]>()
+  const [board, setBoard] = useState<Board>()
+  const [threadList, setThreadList] = useState<Thread[]>()
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/v1/threads/', {
-      method: 'GET',
-      cache: 'default',
+    boards.fetchOne({
+      params: `name=${boardName}`,
+      success: (results) => setBoard(results),
     })
-      .then((res) => res.json())
-      .then((data) => setThreads(data.results))
+  }, [boardName])
+
+  useEffect(() => {
+    threads.fetchAll({
+      params: `board=${boardName}`,
+      success: (results) => setThreadList(results),
+    })
   }, [])
 
   return (
-    <div key={boardName}>
-      <div className='Container'>
-        <h3>{boardName} - [desc]</h3>
-      </div>
-      <div className='Author-container'>
-        <Author variant='Thread' />
-      </div>
-      <div className='Container'>
-        <div style={{ paddingTop: '5px', paddingLeft: 45, paddingRight: 45 }}>
-          <hr />
-        </div>
-      </div>
-      <div className='Board-container'>
-        {threads &&
-          threads.map((thread: Thread) => (
-            <div key={`${thread.board.name}/${thread.id}`}>
-              <div className='Thread-container'>
-                <div>
-                  <h6>
-                    {thread.creator.username}
-                    <span style={{ float: 'right', textAlign: 'right' }}>
-                      <div style={{ paddingRight: '45px' }}>
-                        <a
-                          className='Reply-to'
-                          href={`/${boardName}/${thread.id}#reply`}>
-                          #{thread.id}
-                        </a>
-                      </div>
-                    </span>
-                  </h6>
-                </div>
-                <div>
-                  <h5>{thread.subject}</h5>
-                </div>
-                <div>
-                  <p>{thread.comment}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-    </div>
+    <Box className={boardName}>
+      {board && (
+        <Box key={boardName}>
+          <Box className='Container'>
+            <Typography variant='h3'>
+              /{board.name}/ - {board.description}
+            </Typography>
+          </Box>
+          <Box className='Author-container'>
+            <Author variant='Thread' />
+          </Box>
+          <Box className='Container'>
+            <Box>
+              <Divider />
+            </Box>
+          </Box>
+          <Box className='Board-container'>
+            {threadList &&
+              threadList.map((thread) => (
+                <ThreadContainer
+                  boardName={thread.board.name}
+                  threadId={thread.id}
+                  data={thread}
+                  key={`${thread.board.name}/${thread.id}`}
+                />
+              ))}
+          </Box>
+        </Box>
+      )}
+    </Box>
   )
 }
 

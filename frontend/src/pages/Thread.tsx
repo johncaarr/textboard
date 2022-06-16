@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Author from '../components/Author'
-import ThreadContainer from '../components/Thread'
+import ThreadContainer from '../components/ThreadContainer'
 
 export const ThreadPage: React.FC = () => {
   const navigate = useNavigate()
@@ -18,7 +18,9 @@ export const ThreadPage: React.FC = () => {
   return (
     <div key={`ThreadPage${threadId}`}>
       <Author variant='Thread' />
-      <ThreadContainer threadId={threadId} />
+      {
+        //<ThreadContainer threadId={threadId} />
+      }
     </div>
   )
 }
