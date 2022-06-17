@@ -1,26 +1,42 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import threads from '../api/threads'
 import Author from '../components/Author'
 import ThreadContainer from '../components/ThreadContainer'
+import type { Thread } from '../types'
 
 export const ThreadPage: React.FC = () => {
   const navigate = useNavigate()
-  const { threadId } = useParams()
+  const { boardName, threadId } = useParams()
+  const [thread, setThread] = useState<Thread>()
 
   useEffect(() => {
     if (!threadId || isNaN(Number(threadId))) {
       navigate('/')
+    } else {
+      threads.fetchOne({
+        params: `board=${boardName}&thread=${threadId}`,
+        success: (result) => setThread(result),
+      })
     }
-  }, [navigate, threadId])
+  }, [boardName, navigate, threadId])
 
-  if (!threadId) return <div />
+  useEffect(() => {
+    if (thread) {
+      document.title = `/${thread.board.name}/ - ${thread.subject} - ${thread.board.verbose}`
+    }
+  }, [thread])
 
   return (
     <div key={`ThreadPage${threadId}`}>
       <Author variant='Thread' />
-      {
-        //<ThreadContainer threadId={threadId} />
-      }
+      {thread && (
+        <ThreadContainer
+          data={thread}
+          boardName={thread.board.name}
+          threadId={thread.id}
+        />
+      )}
     </div>
   )
 }

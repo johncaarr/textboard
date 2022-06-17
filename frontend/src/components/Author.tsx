@@ -1,8 +1,8 @@
 import React from 'react'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Grid, Paper } from '@mui/material'
 import { useFormState } from '@johncaarr/formish'
-import post from '../api/posts'
-import thread from '../api/threads'
+import posts from '../api/posts'
+import threads from '../api/threads'
 import TextInput from './TextInput'
 import type { AuthorInput } from '../types'
 
@@ -24,60 +24,78 @@ export const Author: React.FC<AuthorProps> = ({ variant }) => {
       const inputValues: Partial<AuthorInput> = { ...values }
       if (!isThread) {
         delete inputValues.subject
-        post.create({ values: inputValues })
+        posts.create({ values: inputValues })
       } else {
-        thread.create({ values: inputValues })
+        threads.create({ values: inputValues })
       }
     },
   })
   return (
     <Box
       key='Author'
-      sx={{ border: '1px inset black', maxWidth: '500px', padding: '10px' }}>
-      <form onSubmit={handleSubmit}>
-        {isThread && (
-          <Box key='Subject-field'>
-            <TextInput
-              label='Subject'
-              name='subject'
-              value={values.subject}
-              errval={errors.subject}
-              onFormChange={handleChange}
-            />
-          </Box>
-        )}
-        <Box key='Options-field'>
-          <TextInput
-            label='Options'
-            name='options'
-            value={values.options}
-            errval={errors.options}
-            onFormChange={handleChange}
-          />
-          <Box component='span'>
-            <Button
-              color='primary'
-              name='submit'
-              type='submit'
-              value='Post Thread'
-              variant='contained'
-              sx={{ float: 'right', minWidth: '100px' }}
-            />
-          </Box>
-        </Box>
-        <Box key='Comment-field'>
-          <TextInput
-            fullWidth
-            multiline
-            minRows={6}
-            label='Comment'
-            name='comment'
-            value={values.comment}
-            errval={errors.comment}
-            onFormChange={handleChange}
-          />
-        </Box>
-      </form>
+      sx={{ minWidth: '375px', maxWidth: '500px', padding: '10px' }}>
+      <Paper elevation={12} sx={{ padding: '15px' }}>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              {isThread && (
+                <Box key='Subject-field'>
+                  <TextInput
+                    fullWidth
+                    label='Subject'
+                    name='subject'
+                    value={values.subject}
+                    errval={errors.subject}
+                    onFormChange={handleChange}
+                  />
+                </Box>
+              )}
+            </Grid>
+            <Grid container item spacing={1} xs={12}>
+              <Grid item xs={8}>
+                <Box key='Options-field'>
+                  <TextInput
+                    fullWidth
+                    label='Options'
+                    name='options'
+                    value={values.options}
+                    errval={errors.options}
+                    onFormChange={handleChange}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  fullWidth
+                  color='primary'
+                  name='submit'
+                  size='large'
+                  type='submit'
+                  variant='contained'
+                  sx={{ float: 'right', minHeight: '90%' }}>
+                  Post Thread
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Box key='Comment-field'>
+                <TextInput
+                  fullWidth
+                  multiline
+                  required
+                  minRows={6}
+                  label='Comment'
+                  name='comment'
+                  value={values.comment}
+                  errval={errors.comment}
+                  onFormChange={handleChange}
+                  helperText='comment required | markdown supported (no images)'
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </form>
+      </Paper>
     </Box>
   )
 }

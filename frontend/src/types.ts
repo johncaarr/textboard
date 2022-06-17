@@ -1,3 +1,10 @@
+/**
+ * An unsorted, semi-documented, catch-all types file
+ * @file src/types.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 export interface User {
   id: number
   username: string
@@ -7,9 +14,20 @@ export interface User {
   is_active: boolean
 }
 
+export interface Session {
+  user: User
+  csrf: string
+}
+
+export interface NavLink {
+  label: string
+  link: string
+}
+
 export interface Board {
   id: number
   name: string
+  verbose: string
   description: string
 }
 
@@ -55,4 +73,12 @@ export interface AuthorInput {
   options: string
   subject: string
 }
+
+export interface DateCollection {
+  created: Date
+  edited: Date
+}
+
+export type Get = (store: Storage, key: string, def?: unknown) => unknown
+export type Set = (store: Storage, key: string, val: string) => void
 

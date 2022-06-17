@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import {
   FormControl,
   FormHelperText,
@@ -14,7 +14,7 @@ export interface TextInputProps extends OutlinedInputProps {
   onFormChange: FormChangeHandler
   errval?: string
   fullWidth?: boolean
-  helperText?: string
+  helperText?: string | ReactNode | ReactNode[]
   name?: string
   required?: boolean
   type?: 'password' | 'text'

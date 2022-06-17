@@ -1,3 +1,4 @@
+import storage from '../modules/storage'
 import type { Fetch, Post } from '../types'
 
 export namespace posts {
@@ -7,8 +8,14 @@ export namespace posts {
     values,
   }) =>
     fetch(`http://127.0.0.1:8000/api/v1/posts/`, {
+      credentials: 'include',
       method: 'POST',
-      cache: 'default',
+      mode: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-CSRFToken': storage.get(sessionStorage, 'csrftoken') as string,
+      },
       body: JSON.stringify(values!),
     })
       .catch((reason) => failure(reason))

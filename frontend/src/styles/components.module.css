@@ -1,0 +1,13 @@
+
+
+.link a:link {
+  color: 'black';
+}
+
+.link a:hover {
+  color: 'red';
+}
+
+.link a:visited {
+  color: 'black';
+}

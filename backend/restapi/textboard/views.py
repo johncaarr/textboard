@@ -33,18 +33,21 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        queryset = models.Post.objects.all()
         board = self.request.query_params.get('board')
         post = self.request.query_params.get('post')
-
-        post_queryset = models.Post.objects.all()
-        board_obj = models.Board.objects.get(name=board)
-
-        if board and post:
-            return post_queryset.filter(board=board_obj, id=post)
-        elif board:
-            return post_queryset.filter(board=board_obj)
-
-        return post_queryset
+        thread = self.request.query_params.get('thread')
+        if board:
+            board_obj = models.Board.objects.get(name=board)
+            if post:
+                return queryset.filter(thread__board=board_obj, id=post)
+            elif thread:
+                thread_obj = \
+                    models.Thread.objects.get(board=board_obj, id=thread)
+                return queryset.filter(thread__board=board_obj, thread=thread_obj)
+            else:
+                return queryset.filter(thread__board=board_obj)
+        return queryset
 
     def perform_create(self, serializer):
         ip_address = get_ip_address(self)
@@ -64,18 +67,16 @@ class ThreadViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        queryset = models.Thread.objects.all()
         board = self.request.query_params.get('board')
         thread = self.request.query_params.get('thread')
-
-        thread_queryset = models.Thread.objects.all()
-        board_obj = models.Board.objects.get(name=board)
-
-        if board and thread:
-            return thread_queryset.filter(board=board_obj, id=thread)
-        elif board:
-            return thread_queryset.filter(board=board_obj)
-
-        return thread_queryset
+        if board:
+            board_obj = models.Board.objects.get(name=board)
+            if thread:
+                return queryset.filter(board=board_obj, id=thread)
+            else:
+                return queryset.filter(board=board_obj)
+        return queryset
 
     def perform_create(self, serializer):
         ip_address = get_ip_address(self)

@@ -21,8 +21,9 @@ class ThreadSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(max_length=512, required=True)
     options = serializers.CharField(max_length=128, required=False)
     sticked = serializers.BooleanField(default=False, read_only=True)
-    board = serializers.SlugRelatedField(
-        many=False, queryset=Board.objects.all(), slug_field='name')
+    board = BoardSerializer(many=False, read_only=True)
+    # serializers.SlugRelatedField(many=False,
+    # queryset=Board.objects.all(), slug_field='name')
     creator = UserSerializer(many=False, read_only=True)
     editor = UserSerializer(many=False, read_only=True)
     ip_address = serializers.HiddenField(default='::0')
@@ -53,6 +54,7 @@ class PostSerializer(serializers.ModelSerializer):
     creator = UserSerializer(many=False, read_only=True)
     editor = UserSerializer(many=False, read_only=True)
     ip_address = serializers.HiddenField(default='::0')
+    thread = ThreadSerializer(many=False)
 
     def create(self, validated_data):
         post = Post.objects.create(**validated_data)
