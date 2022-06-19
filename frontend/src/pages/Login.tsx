@@ -9,20 +9,18 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
-import React, { useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { useFormState, validations } from '@johncaarr/formish'
 
-import users from '../api/users'
+import { users } from '../api'
 import storage from '../modules/storage'
 import Center from '../components/Center'
 import TextInput from '../components/TextInput'
-import { useAppSelector } from '../state/hooks'
 
 export const LoginPage: React.FC = () => {
+  users.useLoginRedirectEffect()
   const login = users.useLogin()
-  const navigate = useNavigate()
-  const session = useAppSelector((state) => state.session)
   const [values, errors, handleChange, handleSubmit] = useFormState({
     initialValues: {
       username: '',
@@ -44,15 +42,10 @@ export const LoginPage: React.FC = () => {
       login(username, password)
     },
   })
-
-  useEffect(() => {
-    if (session?.user) navigate('/')
-  }, [navigate, session, session.user])
-
   return (
     <Box className='Login-page'>
       <Container sx={{ padding: 3, width: '50ch' }}>
-        <Paper elevation={12}>
+        <Paper variant='outlined'>
           <Center>
             <Box sx={{ paddingTop: 2 }}>
               <Typography variant='h4'>User Login</Typography>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import threads from '../api/threads'
+import { threads } from '../api'
 import Author from '../components/Author'
 import ThreadContainer from '../components/ThreadContainer'
 import type { Thread } from '../types'

@@ -82,3 +82,19 @@ export interface DateCollection {
 export type Get = (store: Storage, key: string, def?: unknown) => unknown
 export type Set = (store: Storage, key: string, val: string) => void
 
+export type Logout = () => () => Promise<void>
+export type Login = () => (username: string, password: string) => Promise<void>
+export type Register = () => (
+  username: string,
+  email: string,
+  password: string
+) => Promise<void>
+
+export interface LinkState {
+  lastpath?: string
+}
+
+export type RedirectEffect = (
+  callback?: () => unknown | Promise<unknown>
+) => void
+

@@ -1,4 +1,4 @@
-import storage from '../modules/storage'
+import Cookies from 'js-cookie'
 import type { Fetch, Post } from '../types'
 
 export namespace posts {
@@ -14,7 +14,7 @@ export namespace posts {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRFToken': storage.get(sessionStorage, 'csrftoken') as string,
+        'X-CSRFToken': Cookies.get('csrftoken') ?? '',
       },
       body: JSON.stringify(values!),
     })

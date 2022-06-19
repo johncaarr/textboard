@@ -1,4 +1,4 @@
-import storage from '../modules/storage'
+import Cookies from 'js-cookie'
 import type { Fetch, Thread } from '../types'
 
 export namespace threads {
@@ -14,7 +14,7 @@ export namespace threads {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRFToken': storage.get(sessionStorage, 'csrftoken') as string,
+        'X-CSRFToken': Cookies.get('csrftoken') ?? '',
       },
       body: JSON.stringify(values!),
     })

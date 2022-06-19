@@ -8,6 +8,7 @@ export const Layout: React.FC = () => {
   const session = useAppSelector((state) => state.session)
   const [boards, setBoards] = useState<Board[]>()
   const [navLinks, setNavLinks] = useState<NavLink[]>()
+
   useEffect(() => {
     fetch('http://127.0.0.1:8000/api/v1/boards/', {
       method: 'GET',
@@ -18,6 +19,7 @@ export const Layout: React.FC = () => {
         setBoards(data.results.sort((a, b) => a.name.localeCompare(b.name)))
       )
   }, [])
+
   useEffect(() => {
     setNavLinks([
       {
@@ -35,6 +37,7 @@ export const Layout: React.FC = () => {
       },
     ])
   }, [session?.user])
+
   return (
     <Box className='Layout' sx={{ paddingTop: '10px' }}>
       <Grid container spacing={2}>

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Box, Collapse, Divider, Grid, Typography } from '@mui/material'
+import { Box, Collapse, Typography } from '@mui/material'
 
 import Author from '../components/Author'
 import Center from '../components/Center'
 import SPDivider from '../components/SPDivider'
 import ThreadContainer from '../components/ThreadContainer'
-import boards from '../api/boards'
-import threads from '../api/threads'
+import { boards, threads } from '../api'
 import type { Board, Thread } from '../types'
 
 export const BoardPage: React.FC = () => {

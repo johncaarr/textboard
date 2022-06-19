@@ -1,8 +1,7 @@
 import React from 'react'
 import { Box, Button, Grid, Paper } from '@mui/material'
 import { useFormState } from '@johncaarr/formish'
-import posts from '../api/posts'
-import threads from '../api/threads'
+import { posts, threads } from '../api'
 import TextInput from './TextInput'
 import type { AuthorInput } from '../types'
 
@@ -34,7 +33,7 @@ export const Author: React.FC<AuthorProps> = ({ variant }) => {
     <Box
       key='Author'
       sx={{ minWidth: '375px', maxWidth: '500px', padding: '10px' }}>
-      <Paper elevation={12} sx={{ padding: '15px' }}>
+      <Paper variant='outlined' sx={{ padding: '15px' }}>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={1}>
             <Grid item xs={12}>

@@ -9,43 +9,49 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
-import React, { useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { useFormState, validations } from '@johncaarr/formish'
 
+import { users } from '../api'
 import storage from '../modules/storage'
 import Center from '../components/Center'
 import TextInput from '../components/TextInput'
-import { useAppSelector } from '../state/hooks'
 
 export const RegisterPage: React.FC = () => {
-  const navigate = useNavigate()
+  users.useLoginRedirectEffect()
+  const register = users.useRegister()
   const [values, errors, handleChange, handleSubmit] = useFormState({
     initialValues: {
-      email: storage.get(localStorage, 'email', '') as string,
-      username: storage.get(localStorage, 'username', '') as string,
-      password: storage.get(localStorage, 'password', '') as string,
+      email: '',
+      username: '',
+      password: '',
       remember: storage.get(localStorage, 'remember', true) as boolean,
     },
     validationSchema: {
+      username: (value) => [
+        !validations.isLength(value, 3),
+        'Username must be 3 or more characters',
+      ],
       email: (value) => [validations.isEmail(value), 'Invalid email address'],
       password: (value) => [
         validations.isLength(value, 8),
         'Must be 8 or more characters',
       ],
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => {
+      const { username, email, password, remember } = values
+      if (remember) {
+        storage.set(localStorage, 'username', username)
+        storage.set(localStorage, 'password', password)
+      }
+      register(username, email, password)
+    },
   })
-
-  const session = useAppSelector((state) => state.session)
-  useEffect(() => {
-    if (session.user) navigate('/menu')
-  }, [navigate, session, session.user])
-
   return (
     <Box className='Register-page'>
       <Container sx={{ padding: 3, width: '50ch' }}>
-        <Paper elevation={12}>
+        <Paper variant='outlined'>
           <Center>
             <Box sx={{ paddingTop: 2 }}>
               <Typography variant='h4'>User Registration</Typography>

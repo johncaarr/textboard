@@ -1,49 +1,80 @@
-import storage from '../modules/storage'
-import { getCookie } from '../modules/cookies'
-import { useAppDispatch } from '../state/hooks'
-import type { User } from '../types'
+/**
+ * API module for user related hooks
+ * @file src/api/users.ts
+ * @author John Carr
+ * @license MIT
+ */
+
+import Cookies from 'js-cookie'
+import { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+import csrf from '../modules/csrf'
+import { useAppDispatch, useAppSelector } from '../state/hooks'
+import type {
+  LinkState,
+  Login,
+  Logout,
+  RedirectEffect,
+  Register,
+  User,
+} from '../types'
 
 export namespace users {
-  export const useLogin = () => {
+  /**
+   *
+   * @returns
+   */
+  export const useLogin: Login = () => {
     const dispatch = useAppDispatch()
     return (username: string, password: string) =>
-      fetch('http://localhost:8000/api/v1/auth/login/', {
+      fetch('http://127.0.0.1:8000/api/v1/auth/login/', {
         credentials: 'include',
         method: 'POST',
-        mode: 'same-origin',
-        headers: {
-          Accept: 'application/json',
+        mode: 'cors',
+        headers: csrf.headers({
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken'),
-        },
-        body: `username=${username}&password=${password}`,
+        }),
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
       })
         .catch((reason) => console.error(reason))
         .then((response) => response && response.json())
         .then(() => {
           dispatch({
             type: 'session/login',
-            payload: { username: username },
+            payload: { username: username } as Partial<User>,
           })
         })
   }
 
-  export const useLogout = () => {
+  /**
+   *
+   * @returns
+   */
+  export const useLogout: Logout = () => {
     const dispatch = useAppDispatch()
-    return fetch('http://127.0.0.1:8000/api/v1/auth/logout/', {
-      method: 'GET',
-      cache: 'default',
-    })
-      .catch((reason) => console.error(reason))
-      .then((response) => response && response.json())
-      .then(() => {
-        dispatch({
-          type: 'session/logout',
-        })
+    return () =>
+      fetch('http://127.0.0.1:8000/api/v1/auth/logout/', {
+        method: 'GET',
+        cache: 'default',
       })
+        .catch((reason) => console.error(reason))
+        .then((response) => response && response.json())
+        .then(() => {
+          dispatch({
+            type: 'session/logout',
+          })
+        })
   }
 
-  export const useRegister = () => {
+  /**
+   *
+   * @returns
+   */
+  export const useRegister: Register = () => {
     const dispatch = useAppDispatch()
     return (username: string, email: string, password: string) =>
       fetch('http://127.0.0.1:8000/api/v1/users/', {
@@ -53,9 +84,13 @@ export namespace users {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken'),
+          'X-CSRFToken': Cookies.get('csrftoken') ?? '',
         },
-        body: `username=${username}$email=${email}&password=${password}`,
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password,
+        }),
       })
         .catch((reason) => console.error(reason))
         .then((response) => response && response.json())
@@ -65,6 +100,29 @@ export namespace users {
             payload: { username: username },
           })
         })
+  }
+
+  /**
+   *
+   * @returns
+   */
+  export const useLoginRedirectEffect: RedirectEffect = (callback) => {
+    const location = useLocation()
+    const navigate = useNavigate()
+    const session = useAppSelector((state) => state.session)
+    return useEffect(() => {
+      if (session?.user) {
+        if (callback) {
+          setTimeout(callback, 0)
+        }
+        let lastpath = '/'
+        if (location.state) {
+          const locationState = location.state as LinkState
+          lastpath = locationState.lastpath ?? '/'
+        }
+        navigate(lastpath)
+      }
+    }, [callback, location.state, navigate, session, session.user])
   }
 }
 

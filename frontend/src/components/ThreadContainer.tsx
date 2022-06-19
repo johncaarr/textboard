@@ -4,8 +4,7 @@ import { Box, Grid, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 
 import Markdown from './Markdown'
-import posts from '../api/posts'
-import threads from '../api/threads'
+import { posts, threads } from '../api'
 import { getDateString } from '../modules/date'
 import type { DateCollection, Post, Thread } from '../types'
 
