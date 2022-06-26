@@ -11,18 +11,20 @@ export interface SPDividerProps extends DividerProps {
 }
 
 export const SPDivider: React.FC<SPDividerProps> = ({
-  bottom,
   horizontal = 0,
-  left,
-  right,
-  top,
   vertical = 0,
+  bottom,
+  right,
+  left,
+  top,
+  sx,
   ...props
 }) => {
   return (
     <Box
       className='Side-padded-divider'
       sx={{
+        ...sx,
         paddingBottom: bottom ?? vertical,
         paddingLeft: left ?? horizontal,
         paddingRight: right ?? horizontal,

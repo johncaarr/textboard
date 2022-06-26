@@ -1,9 +1,9 @@
 import React from 'react'
 import { Box, Button, Grid, Paper } from '@mui/material'
 import { useFormState } from '@johncaarr/formish'
-import { posts, threads } from '../api'
-import TextInput from './TextInput'
-import type { AuthorInput } from '../types'
+import { posts, threads } from '../../api'
+import TextInput from '../TextInput'
+import type { AuthorInput } from '../../types'
 
 const initialFormValues: AuthorInput = {
   comment: '',
@@ -12,23 +12,33 @@ const initialFormValues: AuthorInput = {
 }
 
 export interface AuthorProps {
+  board?: string
+  thread?: number
   variant: 'Post' | 'Thread'
 }
 
-export const Author: React.FC<AuthorProps> = ({ variant }) => {
+export const Author: React.FC<AuthorProps> = ({ board, thread, variant }) => {
   const isThread = variant === 'Thread'
+  const createPost = posts.useCreatePost()
+  const createThread = threads.useCreateThread()
+
   const [values, errors, handleChange, handleSubmit] = useFormState({
     initialValues: initialFormValues,
     onSubmit: (values) => {
-      const inputValues: Partial<AuthorInput> = { ...values }
+      const inputValues: Partial<AuthorInput> = {
+        ...values,
+        board: board,
+        thread: thread,
+      }
       if (!isThread) {
         delete inputValues.subject
-        posts.create({ values: inputValues })
+        createPost({ values: inputValues })
       } else {
-        threads.create({ values: inputValues })
+        createThread({ values: inputValues })
       }
     },
   })
+
   return (
     <Box
       key='Author'

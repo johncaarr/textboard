@@ -1,33 +1,32 @@
-import Cookies from 'js-cookie'
-import type { Fetch, Post } from '../types'
+import users from './users'
+import csrf from '../modules/csrf'
+import type { ApiFetch, Post, PostInput } from '../types'
 
 export namespace posts {
-  export const create: Fetch<Post> = ({
-    failure = console.error,
-    success = console.log,
-    values,
-  }) =>
-    fetch(`http://127.0.0.1:8000/api/v1/posts/`, {
-      credentials: 'include',
-      method: 'POST',
-      mode: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-CSRFToken': Cookies.get('csrftoken') ?? '',
-      },
-      body: JSON.stringify(values!),
-    })
-      .catch((reason) => failure(reason))
-      .then((response) => response && response.json())
-      .then((data) => data && data.results && success(data.results))
+  export const useCreatePost: () => ApiFetch<PostInput> = () => {
+    const token = users.useSessionToken()
+    return ({ failure = console.error, success = console.log, values }) =>
+      fetch(`${process.env.REACT_APP_API_PATH}/api/v1/posts/`, {
+        credentials: 'include',
+        method: 'POST',
+        mode: 'cors',
+        headers: csrf.headers({
+          Authorization: token,
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(values!),
+      })
+        .catch((reason) => failure(reason))
+        .then((response) => response && response.json())
+        .then((data) => data && data.results && success(data.results))
+  }
 
-  export const fetchAll: Fetch<Post[]> = ({
+  export const fetchAll: ApiFetch<Post[]> = ({
     failure = console.error,
     success = console.log,
     params = '',
   }) =>
-    fetch(`http://127.0.0.1:8000/api/v1/posts/?${params}`, {
+    fetch(`${process.env.REACT_APP_API_PATH}/api/v1/posts/?${params}`, {
       method: 'GET',
       cache: 'default',
     })
@@ -35,12 +34,12 @@ export namespace posts {
       .then((response) => response && response.json())
       .then((data) => data && data.results && success(data.results))
 
-  export const fetchOne: Fetch<Post> = ({
+  export const fetchOne: ApiFetch<Post> = ({
     failure = console.error,
     success = console.log,
     params = '',
   }) =>
-    fetch(`http://127.0.0.1:8000/api/v1/posts/?${params}`, {
+    fetch(`${process.env.REACT_APP_API_PATH}/api/v1/posts/?${params}`, {
       method: 'GET',
       cache: 'default',
     })

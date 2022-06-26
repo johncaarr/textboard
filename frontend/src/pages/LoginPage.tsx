@@ -9,17 +9,16 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect } from 'react'
 import { useFormState, validations } from '@johncaarr/formish'
 
 import { users } from '../api'
 import storage from '../modules/storage'
-import Center from '../components/Center'
+import FlexBox from '../components/FlexBox'
+import HRLink from '../components/HRLink'
 import TextInput from '../components/TextInput'
 
 export const LoginPage: React.FC = () => {
-  users.useLoginRedirectEffect()
   const login = users.useLogin()
   const [values, errors, handleChange, handleSubmit] = useFormState({
     initialValues: {
@@ -42,15 +41,20 @@ export const LoginPage: React.FC = () => {
       login(username, password)
     },
   })
+
+  useEffect(() => {
+    document.title = 'textboard - Login'
+  }, [])
+
   return (
     <Box className='Login-page'>
       <Container sx={{ padding: 3, width: '50ch' }}>
         <Paper variant='outlined'>
-          <Center>
+          <FlexBox justify='center'>
             <Box sx={{ paddingTop: 2 }}>
               <Typography variant='h4'>User Login</Typography>
             </Box>
-          </Center>
+          </FlexBox>
           <Box sx={{ padding: 2 }}>
             <Divider />
           </Box>
@@ -80,7 +84,7 @@ export const LoginPage: React.FC = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Center>
+                <FlexBox justify='center'>
                   <FormControlLabel
                     label='Remember my login info'
                     control={
@@ -91,10 +95,10 @@ export const LoginPage: React.FC = () => {
                       />
                     }
                   />
-                </Center>
+                </FlexBox>
               </Grid>
               <Grid item xs={12}>
-                <Center>
+                <FlexBox justify='center'>
                   <Button
                     color='success'
                     size='large'
@@ -102,14 +106,14 @@ export const LoginPage: React.FC = () => {
                     variant='contained'>
                     Submit Login
                   </Button>
-                </Center>
-                <Center>
+                </FlexBox>
+                <FlexBox justify='center'>
                   <Typography variant='subtitle1' sx={{ paddingTop: '15px' }}>
-                    <Link to='/register'>
+                    <HRLink to='/register'>
                       Don't have an account? Register here
-                    </Link>
+                    </HRLink>
                   </Typography>
-                </Center>
+                </FlexBox>
               </Grid>
             </Grid>
           </form>

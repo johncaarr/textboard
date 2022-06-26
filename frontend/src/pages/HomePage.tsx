@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
+
+import { boards } from '../api'
+import HRLink from '../components/HRLink'
 import type { Board } from '../types'
 
 export const HomePage: React.FC = () => {
-  const [boards, setBoards] = useState<Board[]>()
+  const [boardsList, setBoardsList] = useState<Board[]>()
+
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/v1/boards/', {
-      method: 'GET',
-      cache: 'default',
-    })
-      .then((res) => res.json())
-      .then((data) => setBoards(data.results))
+    if (!boardsList) {
+      boards.fetchAll({
+        success: (results) => setBoardsList(results),
+      })
+    }
+  }, [boardsList])
+
+  useEffect(() => {
+    document.title = 'textboard - Home'
   }, [])
+
   return (
     <Box key='HomePage'>
       <Box>
         <Typography variant='h3'>Boards</Typography>
       </Box>
       <Box sx={{ paddingLeft: 25 }}>
-        {boards &&
-          boards.map((board: Board) => (
+        {boardsList &&
+          boardsList.map((board: Board) => (
             <Box key={board.name}>
-              <Link to={`/${board.name}`}>
+              <HRLink to={`/${board.name}`}>
                 {board.name} - {board.description}
-              </Link>
+              </HRLink>
             </Box>
           ))}
       </Box>

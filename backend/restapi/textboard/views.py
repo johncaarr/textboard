@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.db.models import Prefetch
 from django.contrib.auth.models import User
 from rest_framework import generics, mixins, permissions, viewsets
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication, BasicAuthentication
 from restapi.textboard import models, serializers
 from restapi.textboard.permissions import BoardAccessPermission
 
@@ -30,6 +31,8 @@ class BoardViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PostViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.PostSerializer
+    authentication_classes = [TokenAuthentication,
+                              SessionAuthentication, BasicAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
@@ -64,6 +67,8 @@ class PostViewSet(viewsets.ModelViewSet):
 class ThreadViewSet(viewsets.ModelViewSet):
     queryset = models.Thread.objects.all()
     serializer_class = serializers.ThreadSerializer
+    authentication_classes = [TokenAuthentication,
+                              SessionAuthentication, BasicAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
@@ -80,11 +85,15 @@ class ThreadViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         ip_address = get_ip_address(self)
-        serializer.save(
-            sticked=False,
-            ip_address=ip_address,
-            creator_id=self.request.user.id,
-            editor_id=self.request.user.id)
+        board = self.request.query_params.get('board')
+        if board:
+            board_obj = models.Board.objects.get(name=board)
+            serializer.save(
+                sticked=False,
+                board=board_obj,
+                ip_address=ip_address,
+                creator_id=self.request.user.id,
+                editor_id=self.request.user.id)
 
     def perform_update(self, serializer):
         if self.request.user.is_staff:

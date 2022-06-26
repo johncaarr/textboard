@@ -19,7 +19,8 @@ class BoardSerializer(serializers.ModelSerializer):
 class ThreadSerializer(serializers.ModelSerializer):
     subject = serializers.CharField(max_length=64, required=True)
     comment = serializers.CharField(max_length=512, required=True)
-    options = serializers.CharField(max_length=128, required=False)
+    options = serializers.CharField(
+        max_length=128, required=False, allow_blank=True, allow_null=True)
     sticked = serializers.BooleanField(default=False, read_only=True)
     board = BoardSerializer(many=False, read_only=True)
     # serializers.SlugRelatedField(many=False,
@@ -48,7 +49,8 @@ class ThreadSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     comment = serializers.CharField(max_length=512, required=True)
-    options = serializers.CharField(max_length=128, required=False)
+    options = serializers.CharField(
+        max_length=128, required=False, allow_blank=True, allow_null=True)
     thread = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Thread.objects.all())
     creator = UserSerializer(many=False, read_only=True)

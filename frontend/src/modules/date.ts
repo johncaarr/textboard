@@ -5,11 +5,6 @@
  * @license MIT
  */
 
-/**
- * @param date Input date object
- * @returns Name of input object's day of the week
- */
-
 export const getWeekDay = (date: Date): string => {
   switch (date.getDay()) {
     case 1:
@@ -28,11 +23,6 @@ export const getWeekDay = (date: Date): string => {
       return 'Sunday'
   }
 }
-
-/**
- * @param date Input date object
- * @returns Formatted string to be used by threads and posts
- */
 
 export const getDateString = (date: Date): string =>
   `${date.getMonth()}/${date.getDay()}/${date.getFullYear()} 

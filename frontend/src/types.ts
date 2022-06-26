@@ -5,6 +5,18 @@
  * @license MIT
  */
 
+import type { ThunkAction, Action } from '@reduxjs/toolkit'
+import store from './state/store'
+
+export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>
+
 export interface User {
   id: number
   username: string
@@ -12,11 +24,6 @@ export interface User {
   date_joined: string
   is_staff: boolean
   is_active: boolean
-}
-
-export interface Session {
-  user: User
-  csrf: string
 }
 
 export interface NavLink {
@@ -45,6 +52,10 @@ export interface Thread {
   ip_address?: string
 }
 
+export interface ThreadInput extends Omit<Thread, 'board'> {
+  board: string
+}
+
 export interface Post {
   id: number
   comment: string
@@ -57,11 +68,15 @@ export interface Post {
   ip_address?: string
 }
 
+export interface PostInput extends Omit<Post, 'thread'> {
+  thread: number
+}
+
 export interface FetchResult<T> {
   results: Array<T>
 }
 
-export type Fetch<T> = (params: {
+export type ApiFetch<T> = (params: {
   params?: string
   values?: Partial<T>
   failure?: (error: any) => any | Promise<any>
@@ -69,6 +84,8 @@ export type Fetch<T> = (params: {
 }) => Promise<any>
 
 export interface AuthorInput {
+  board?: string
+  thread?: number
   comment: string
   options: string
   subject: string
@@ -79,8 +96,8 @@ export interface DateCollection {
   edited: Date
 }
 
-export type Get = (store: Storage, key: string, def?: unknown) => unknown
-export type Set = (store: Storage, key: string, val: string) => void
+export type Get = (store: Storage, key: string, def?: any) => any
+export type Set = (store: Storage, key: string, val: any) => void
 
 export type Logout = () => () => Promise<void>
 export type Login = () => (username: string, password: string) => Promise<void>
@@ -98,3 +115,17 @@ export type RedirectEffect = (
   callback?: () => unknown | Promise<unknown>
 ) => void
 
+export interface UserSession {
+  id: number
+  email: string
+  token: string
+  username: string
+}
+
+export interface Session {
+  user: UserSession
+}
+
+export interface Dict {
+  [key: string]: any
+}
