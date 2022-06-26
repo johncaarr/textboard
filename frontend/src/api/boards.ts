@@ -1,3 +1,9 @@
+/**
+ * @file src/api/boards.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 import type { Board, ApiFetch } from '../types'
 
 export namespace boards {

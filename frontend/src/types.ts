@@ -4,9 +4,9 @@
  * @author John Carr
  * @license MIT
  */
-
-import type { ThunkAction, Action } from '@reduxjs/toolkit'
+import { Dispatch, MouseEventHandler, SetStateAction } from 'react'
 import store from './state/store'
+import type { ThunkAction, Action } from '@reduxjs/toolkit'
 
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
@@ -28,7 +28,8 @@ export interface User {
 
 export interface NavLink {
   label: string
-  link: string
+  link?: string
+  onClick?: MouseEventHandler<HTMLAnchorElement>
 }
 
 export interface Board {
@@ -92,8 +93,7 @@ export interface AuthorInput {
 }
 
 export interface DateCollection {
-  created: Date
-  edited: Date
+  [key: string]: Date
 }
 
 export type Get = (store: Storage, key: string, def?: any) => any
@@ -129,3 +129,13 @@ export interface Session {
 export interface Dict {
   [key: string]: any
 }
+
+export type SetState<T> = Dispatch<SetStateAction<T>>
+
+export interface LayoutContextState {
+  mobileState: boolean
+  setMobileState: SetState<boolean>
+}
+
+export type LayoutContextParams = LayoutContextState | undefined
+

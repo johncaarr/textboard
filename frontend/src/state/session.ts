@@ -1,3 +1,9 @@
+/**
+ * @file src/state/session.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { Session, UserSession } from '../types'

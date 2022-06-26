@@ -1,3 +1,9 @@
+/**
+ * @file src/pages/HomePage.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React, { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 

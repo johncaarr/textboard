@@ -1,3 +1,9 @@
+/**
+ * @file src/components/HRLink.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React from 'react'
 import { useLocation, Link, LinkProps } from 'react-router-dom'
 import type { LinkState } from '../types'

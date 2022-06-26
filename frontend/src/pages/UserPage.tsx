@@ -1,10 +1,16 @@
+/**
+ * @file src/pages/UserPage.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box, Typography } from '@mui/material'
 
 import { users } from '../api'
 import FlexBox from '../components/FlexBox'
-import { useAppSelector } from '../state/hooks'
+import { useAppSelector } from '../state/store'
 import type { User } from '../types'
 
 export const BoardPage: React.FC = () => {

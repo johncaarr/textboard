@@ -1,3 +1,9 @@
+/**
+ * @file src/pages/BoardPage.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Box } from '@mui/material'

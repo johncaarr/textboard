@@ -1,3 +1,9 @@
+/**
+ * @file src/pages/LoginPage.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import {
   Box,
   Button,

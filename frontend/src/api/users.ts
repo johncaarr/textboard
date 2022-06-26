@@ -6,13 +6,13 @@
  */
 
 import { useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import csrf from '../modules/csrf'
-import { useAppDispatch, useAppSelector } from '../state/hooks'
+import { useLastPath } from '../state/path'
+import { useAppDispatch, useAppSelector } from '../state/store'
 import type {
   ApiFetch,
-  LinkState,
   Login,
   Logout,
   RedirectEffect,
@@ -21,23 +21,16 @@ import type {
   User,
 } from '../types'
 
-const useLoginRedirectEffect: RedirectEffect = (callback) => {
-  const location = useLocation()
+const useLoginRedirect: RedirectEffect = (callback) => {
+  const lastPath = useLastPath()
   const navigate = useNavigate()
   const session = useAppSelector((state) => state.session)
   useEffect(() => {
     if (session?.user) {
-      if (callback) {
-        setTimeout(callback, 0)
-      }
-      let lastpath = '/'
-      if (location.state) {
-        const locationState = location.state as LinkState
-        lastpath = locationState.lastpath ?? '/'
-      }
-      navigate(lastpath)
+      if (callback) setTimeout(callback, 0)
+      navigate(lastPath)
     }
-  }, [callback, location.state, navigate, session, session.user])
+  }, [callback, lastPath, navigate, session, session.user])
 }
 
 export namespace users {
@@ -55,7 +48,7 @@ export namespace users {
       .then((data) => data && success(data))
 
   export const useLogin: Login = () => {
-    useLoginRedirectEffect()
+    useLoginRedirect()
     const dispatch = useAppDispatch()
     return (username: string, password: string) =>
       fetch(`${process.env.REACT_APP_API_PATH}/api/v1/auth/token/`, {
@@ -88,7 +81,6 @@ export namespace users {
         cache: 'default',
       })
         .catch((reason) => console.error(reason))
-        .then((response) => response && response.json())
         .then(() => {
           dispatch({
             type: 'session/logout',

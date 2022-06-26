@@ -1529,10 +1529,10 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
-"@johncaarr/formish@^1.0.5":
-  version "1.0.5"
-  resolved "https://npm.pkg.github.com/download/@johncaarr/formish/1.0.5/342346a1d654924e10c94e6b6b58f33706b295385803a1570d95dfdb7e2f3190#d1c0bc78b443442ffdcd584d30973cef84c0a5b2"
-  integrity sha512-MdttraNJCH7Rn0XMxhHYh2eZ00n/otm8P4mqiYI/VNFlCErTdYuTlkL54S8eMzN2F+hoarFQ+bHjon6u5o5PKg==
+"@johncaarr/formish@^1.1.2":
+  version "1.1.2"
+  resolved "https://npm.pkg.github.com/download/@johncaarr/formish/1.1.2/88063354e01c17bd83aea823d61bfdc98c410b32b0618f9f08e10180669a24aa#ca0280c2009f9be14a86b231db370f2b51197c1d"
+  integrity sha512-AMYUSrqQoI2/7dXNk21s/IdIgDrTWcdraQgAPEphBt3I83LLSZUhmHicE/UGvRJSX/XtjMUN1rAMQbNXE7RN+Q==
 
 "@jridgewell/gen-mapping@^0.1.0":
   version "0.1.1"

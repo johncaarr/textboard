@@ -1,3 +1,9 @@
+/**
+ * @file src/components/TextInput.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React, { ReactNode } from 'react'
 import {
   FormControl,

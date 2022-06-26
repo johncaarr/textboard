@@ -1,5 +1,4 @@
 /**
- *
  * @file src/modules/csrf.ts
  * @author John Carr
  * @license MIT
@@ -7,14 +6,14 @@
 
 import Cookies from 'js-cookie'
 
+const CSRF_TOKEN = 'csrftoken'
+
 export namespace csrf {
-  export const headers = (init?: HeadersInit) => {
-    const csrftoken = Cookies.get('csrftoken') ?? ''
-    return new Headers({
+  export const headers = (init?: HeadersInit) =>
+    new Headers({
       ...init,
-      'X-CSRFToken': csrftoken,
+      'X-CSRFToken': Cookies.get(CSRF_TOKEN) ?? '',
     })
-  }
 }
 
 export default csrf

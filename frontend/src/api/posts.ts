@@ -1,3 +1,9 @@
+/**
+ * @file src/api/posts.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 import users from './users'
 import csrf from '../modules/csrf'
 import type { ApiFetch, Post, PostInput } from '../types'

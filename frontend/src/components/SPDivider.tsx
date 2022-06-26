@@ -1,3 +1,9 @@
+/**
+ * @file src/components/SPDivider.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React from 'react'
 import { Box, Divider, DividerProps } from '@mui/material'
 

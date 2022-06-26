@@ -1,7 +1,15 @@
+/**
+ * @file src/state/store.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 import { configureStore } from '@reduxjs/toolkit'
+import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+
 import sessionReducer from './session'
 import storage from '../modules/storage'
-import type { Dict } from '../types'
+import type { AppDispatch, Dict, RootState } from '../types'
 
 const APP_STATE_KEY = 'app-state'
 
@@ -28,6 +36,9 @@ store.subscribe(() => {
     console.error(error)
   }
 })
+
+export const useAppDispatch = () => useDispatch<AppDispatch>()
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export default store
 

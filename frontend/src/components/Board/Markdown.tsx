@@ -1,3 +1,9 @@
+/**
+ * @file src/components/Board/Markdown.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import MarkdownJSX from 'markdown-to-jsx'
 
 // TODO: Remove image tag

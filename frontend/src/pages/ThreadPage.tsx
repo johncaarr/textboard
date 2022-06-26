@@ -1,8 +1,16 @@
+/**
+ * @file src/pages/ThreadPage.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Box } from '@mui/material'
+
 import { threads } from '../api'
 import Author from '../components/Board/Author'
+import FlexBox from '../components/FlexBox'
 import ThreadContainer from '../components/Board/ThreadContainer'
 import type { Thread } from '../types'
 
@@ -23,10 +31,12 @@ export const ThreadPage: React.FC = () => {
       return navigate(`/${boardName}`)
     }
 
-    threads.fetchOne({
-      params: `board=${boardName}&thread=${threadId}`,
-      success: (result) => setThread(result),
-    })
+    if (!thread) {
+      threads.fetchOne({
+        params: `board=${boardName}&thread=${threadId}`,
+        success: (result) => setThread(result),
+      })
+    }
   }, [boardName, navigate, thread, threadId])
 
   useEffect(() => {
@@ -39,7 +49,9 @@ export const ThreadPage: React.FC = () => {
     <Box className='Thread-page'>
       {thread && (
         <Box className='Thread-page-internal'>
-          <Author thread={thread.id} variant='Thread' />
+          <FlexBox justify='center'>
+            <Author thread={thread.id} variant='Post' />
+          </FlexBox>
           <ThreadContainer
             data={thread}
             focus={focus}

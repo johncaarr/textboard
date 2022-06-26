@@ -1,3 +1,9 @@
+/**
+ * @file src/api/threads.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 import users from './users'
 import csrf from '../modules/csrf'
 import type { ApiFetch, Thread, ThreadInput } from '../types'

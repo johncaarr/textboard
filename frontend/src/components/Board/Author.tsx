@@ -1,8 +1,15 @@
+/**
+ * @file src/components/Board/Author.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React from 'react'
 import { Box, Button, Grid, Paper } from '@mui/material'
-import { useFormState } from '@johncaarr/formish'
-import { posts, threads } from '../../api'
+import { useFormState, validations } from '@johncaarr/formish'
+
 import TextInput from '../TextInput'
+import { posts, threads } from '../../api'
 import type { AuthorInput } from '../../types'
 
 const initialFormValues: AuthorInput = {
@@ -24,6 +31,20 @@ export const Author: React.FC<AuthorProps> = ({ board, thread, variant }) => {
 
   const [values, errors, handleChange, handleSubmit] = useFormState({
     initialValues: initialFormValues,
+    validationSchema: {
+      comment: (value) => [
+        validations.isLength(value, 0, 512),
+        'Must be 512 characters or less',
+      ],
+      options: (value) => [
+        validations.isLength(value, 0, 128),
+        'Must be 128 characters or less',
+      ],
+      subject: (value) => [
+        validations.isLength(value, 0, 64),
+        'Must be 64 characters or less',
+      ],
+    },
     onSubmit: (values) => {
       const inputValues: Partial<AuthorInput> = {
         ...values,

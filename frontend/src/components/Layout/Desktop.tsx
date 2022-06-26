@@ -1,3 +1,9 @@
+/**
+ * @file src/components/Layout/Desktop.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React, { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Box, Grid } from '@mui/material'

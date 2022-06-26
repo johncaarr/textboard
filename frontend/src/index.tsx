@@ -1,3 +1,10 @@
+/**
+ * Application entry point
+ * @file src/index.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import './styles/index.css'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -10,6 +17,7 @@ import { Provider } from 'react-redux'
 import { store } from './state/store'
 
 import Router from './Router'
+import LayoutProvider from './components/Layout/Provider'
 import reportWebVitals from './reportWebVitals'
 
 const container = document.getElementById('root')!
@@ -18,7 +26,9 @@ const root = createRoot(container)
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router />
+      <LayoutProvider>
+        <Router />
+      </LayoutProvider>
     </Provider>
   </React.StrictMode>
 )

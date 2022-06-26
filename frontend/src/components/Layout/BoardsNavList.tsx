@@ -1,3 +1,9 @@
+/**
+ * @file src/components/Layout/BoardNavList.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import React from 'react'
 import { Box, Typography } from '@mui/material'
 

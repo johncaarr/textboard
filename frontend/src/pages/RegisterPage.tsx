@@ -1,3 +1,9 @@
+/**
+ * @file src/pages/RegisterPage.tsx
+ * @author John Carr
+ * @license MIT
+ */
+
 import {
   Box,
   Button,
@@ -28,14 +34,35 @@ export const RegisterPage: React.FC = () => {
       remember: storage.get(localStorage, 'remember', true) as boolean,
     },
     validationSchema: {
-      username: (value) => [
-        !validations.isLength(value, 3),
-        'Username must be 3 or more characters',
+      username: [
+        (value) => [
+          validations.isLength(value, 3),
+          'Username must be at least 3 characters',
+        ],
+        (value) => [
+          validations.isLength(value, 3, 32),
+          'Username must be 32 characters or less',
+        ],
       ],
-      email: (value) => [validations.isEmail(value), 'Invalid email address'],
-      password: (value) => [
-        validations.isLength(value, 8),
-        'Must be 8 or more characters',
+      email: [
+        (value) => [
+          validations.isLength(value, 5) && validations.isEmail(value),
+          'Invalid email address',
+        ],
+        (value) => [
+          validations.isLength(value, 5, 128),
+          'Email must be 128 characters or less',
+        ],
+      ],
+      password: [
+        (value) => [
+          validations.isLength(value, 8),
+          'Password must be at least 8 characters',
+        ],
+        (value) => [
+          validations.isLength(value, 8, 256),
+          'Password must be 256 characters or less',
+        ],
       ],
     },
     onSubmit: (values) => {

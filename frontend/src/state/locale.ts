@@ -1,6 +1,12 @@
+/**
+ * @file src/state/locale.ts
+ * @author John Carr
+ * @license MIT
+ */
+
 import { useEffect, useState } from 'react'
 
-import storage from './storage'
+import storage from '../modules/storage'
 import type { Dict } from '../types'
 
 const LOCALE_KEY = 'locale'
@@ -16,13 +22,11 @@ export const setLocale = (locale: string) =>
 export const useLocale = () => {
   const locale = getLocale()
   const [localeSet, setLocaleSet] = useState<Dict>()
-
   useEffect(() => {
     import(`../locale/${locale}.json`)
       .catch((reason) => console.error(reason))
       .then((data) => data && setLocaleSet(data))
   }, [locale])
-
   return localeSet
 }
 
