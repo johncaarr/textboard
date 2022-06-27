@@ -11,7 +11,18 @@ import { useLocation } from 'react-router-dom'
 import { posts } from '../../api'
 import ContainerHeader from './ContainerHeader'
 import Markdown from './Markdown'
-import type { Post } from '../../types'
+import type { Post, Thread, User } from '../../types'
+
+const SELECTED_POST_RGBA = 'rgba(204, 255, 255, 0.75)'
+const POST_UNAVAILABLE: Post = {
+  id: -1,
+  comment: 'Post unavailable',
+  date_created: '',
+  date_edited: '',
+  thread: {} as Thread,
+  creator: {} as User,
+  editor: {} as User,
+}
 
 export interface PostContainerProps {
   data?: Post
@@ -38,6 +49,7 @@ export const PostContainer: React.FC<PostContainerProps> = ({
         posts.fetchOne({
           params: `board=${boardName}&thread=${threadId}&id=${postId}`,
           success: (result) => setPost(result),
+          failure: () => setPost(POST_UNAVAILABLE),
         })
       }
     }
@@ -51,20 +63,20 @@ export const PostContainer: React.FC<PostContainerProps> = ({
             variant='outlined'
             sx={{
               backgroundColor:
-                hash === `#${post.id}`
-                  ? 'rgba(204, 255, 255, 0.75)'
-                  : undefined,
+                hash === `#${post.id}` ? SELECTED_POST_RGBA : undefined,
             }}>
             <Grid
               container
               spacing={1}
               sx={{ padding: '10px', paddingLeft: '30px' }}>
               <Grid item xs={12}>
-                <ContainerHeader
-                  data={post}
-                  posts={postList ?? []}
-                  variant='post'
-                />
+                {post.id > -1 && (
+                  <ContainerHeader
+                    data={post}
+                    posts={postList ?? []}
+                    variant='post'
+                  />
+                )}
               </Grid>
               <Grid container item xs={12}>
                 <Grid item xs={12}>
